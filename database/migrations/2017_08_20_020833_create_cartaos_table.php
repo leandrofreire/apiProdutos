@@ -15,9 +15,10 @@ class CreateCartaosTable extends Migration
     {
         Schema::create('cartaos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('titulo');
             $table->string('numero');
+            $table->string('data');
             $table->string('cvv');
+            $table->string('titular');
             $table->string('cpf');
             $table->timestamps();
         });
