@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Cartao;
 
 class CartaoController extends Controller
 {
@@ -34,7 +35,17 @@ class CartaoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->only(['numero', 'data', 'cvv', 'titular', 'cpf']);
+        if ($data) {
+          $cartao = Cartao::create($data);
+          if ($cartao) {
+            return response()->json(['data'=>$cartao], 201);
+          }else{
+            return response()->json(['message'=>'Erro ao criar cartão'], 400);
+          }
+        }else{
+          return response()->json([]'message'=>'Dados inválidos'], 400);
+        }
     }
 
     /**
