@@ -13,9 +13,9 @@ class CartaoController extends Controller
      $Validator = Validator::make($request->all(),[
        'numero'   => 'required',
        'data'     => 'required|numeric|min:0',
-       'cvv'      => 'required|numeric|min:0|max:3',
+       'cvv'      => 'required|numeric|min:0',
        'titular'  => 'required',
-       'cpf'      => 'required|numeric|min:0'
+       'cpf'      => 'required|numeric|min:0',
      ]);
      return $Validator;
    }
@@ -63,7 +63,7 @@ class CartaoController extends Controller
             return response()->json(['message'=>'Erro ao criar cartão'], 400);
           }
         }else{
-          return response()->json([]'message'=>'Dados inválidos'], 400);
+          return response()->json(['message'=>'Dados inválidos'], 400);
         }
     }
 
