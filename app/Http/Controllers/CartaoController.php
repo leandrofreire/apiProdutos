@@ -28,16 +28,21 @@ class CartaoController extends Controller
      */
     public function index(Request $request)
     {
-        $qtd = $request['qtd'];
-        $page = $request['page'];
-        Paginator::currentPageResolver(function () use ($page){
-          return $page;
-        });
-        $cartoes = Cartao::paginate($qtd);
+        try {
+          $qtd = $request['qtd'];
+          $page = $request['page'];
+          Paginator::currentPageResolver(function () use ($page){
+            return $page;
+          });
+          $cartoes = Cartao::paginate($qtd);
 
-        $cartoes = $cartoes->appends(Request::capture()->except('page'));
+          $cartoes = $cartoes->appends(Request::capture()->except('page'));
 
-        return response()->json(['cartoes'=>$cartoes],200);
+          return response()->json(['cartoes'=>$cartoes],200);
+        } catch (\Exception $e) {
+          return response()->json(['message'=>'Ocorreu um erro no servidor'], 500);
+        }
+
     }
 
     /**
@@ -58,23 +63,28 @@ class CartaoController extends Controller
      */
     public function store(Request $request)
     {
-        //Valida os dados da request
-        $validator = $this->validarCartao($request);
-        if($validator->fails()){
-          return response()->json(['message'=>'Erro',
-          'errors'=>$validator->errors()],400);
-        }
-        $data = $request->only(['numero', 'data', 'cvv', 'titular', 'cpf']);
-        if ($data) {
-          $cartao = Cartao::create($data);
-          if ($cartao) {
-            return response()->json(['data'=>$cartao], 201);
-          }else{
-            return response()->json(['message'=>'Erro ao criar cartão'], 400);
+        try {
+          //Valida os dados da request
+          $validator = $this->validarCartao($request);
+          if($validator->fails()){
+            return response()->json(['message'=>'Erro',
+            'errors'=>$validator->errors()],400);
           }
-        }else{
-          return response()->json(['message'=>'Dados inválidos'], 400);
+          $data = $request->only(['numero', 'data', 'cvv', 'titular', 'cpf']);
+          if ($data) {
+            $cartao = Cartao::create($data);
+            if ($cartao) {
+              return response()->json(['data'=>$cartao], 201);
+            }else{
+              return response()->json(['message'=>'Erro ao criar cartão'], 400);
+            }
+          }else{
+            return response()->json(['message'=>'Dados inválidos'], 400);
+          }
+        } catch (\Exception $e) {
+          return response()->json(['message'=>'Ocorreu um erro no servidor'], 500);
         }
+
     }
 
     /**
@@ -85,15 +95,20 @@ class CartaoController extends Controller
      */
     public function show($id)
     {
-        if($id < 0){
-          return response()->json(['message'=>'Id menor que zero, por favor, informe um ID válido'], 400);
+        try {
+          if($id < 0){
+            return response()->json(['message'=>'Id menor que zero, por favor, informe um ID válido'], 400);
+          }
+          $cartao = Cartao::find($id);
+          if($cartao){
+            return response()->json([$cartao], 200);
+          }else{
+            return response()->json(['message'=>'O veicuo com o '.$id.'não existe'], 404);
+          }
+        } catch (\Exception $e) {
+            return response()->json(['message'=>'Ocorreu um erro no servidor'], 500);
         }
-        $cartao = Cartao::find($id);
-        if($cartao){
-          return response()->json([$cartao], 200);
-        }else{
-          return response()->json(['message'=>'O veicuo com o '.$id.'não existe'], 404);
-        }
+
     }
 
     /**
@@ -116,6 +131,7 @@ class CartaoController extends Controller
      */
     public function update(Request $request, $id)
     {
+      try {
         $validator = $this->validarCartao($request);
         if($validator->fails()){
           return response()->json
@@ -133,6 +149,10 @@ class CartaoController extends Controller
         }else{
           return response()->json(['message'=>'Dados inválidos'], 400);
         }
+      } catch (\Exception $e) {
+        return response()->json(['message'=>'Ocorreu um erro no servidor'], 500);
+      }
+
     }
 
     /**
@@ -143,6 +163,7 @@ class CartaoController extends Controller
      */
     public function destroy($id)
     {
+      try {
         if($id < 0){
           return response()->json(['message'=>'Id menor que zero, por favor, informe um ID válido'], 400);
         }
@@ -153,5 +174,9 @@ class CartaoController extends Controller
         }else{
           return response()->json(['message'=>'O cartão com o id '.$id.' não existe'], 404);
         }
+      } catch (\Exception $e) {
+        return response()->json(['message'=>'Ocorreu um erro no servidor'], 500);
+      }
+
     }
 }
