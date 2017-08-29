@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use App\Cartao;
+use Illuminate\Pagination\Paginator;
 
 class CartaoController extends Controller
 {
@@ -25,9 +26,17 @@ class CartaoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cartoes = Cartao::all();
+        $qtd = $request['qtd'];
+        $page = $request['page'];
+        Paginator::currentPageResolver(function () use ($page){
+          return $page;
+        });
+        $cartoes = Cartao::paginate($qtd);
+
+        $cartoes = $cartoes->appends(Request::capture()->except('page'));
+
         return response()->json(['cartoes'=>$cartoes],200);
     }
 
