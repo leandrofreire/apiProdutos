@@ -108,7 +108,23 @@ class CartaoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $this->validarCartao($request);
+        if($validator->fails()){
+          return response()->json
+          (['message'=>'Erro','errors'=>$validator->errors()], 400);
+        }
+        $data = $request->only(['numero', 'data', 'cvv', 'titular', 'cpf']);
+        if($data){
+          $cartao = Cartao::find($id);
+          if($cartao){
+            $cartao->update($data);
+            return response()->json(['data'=>$cartao], 200);
+          }else{
+            return response()->json(['message'=>'O cartão com id'.$id.'não existe'], 400);
+          }
+        }else{
+          return response()->json(['message'=>'Dados inválidos'], 400);
+        }
     }
 
     /**
