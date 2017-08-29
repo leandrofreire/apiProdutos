@@ -77,8 +77,7 @@ class CartaoController extends Controller
     public function show($id)
     {
         if($id < 0){
-          return response()->json(['message'=>'Id menor que zero,
-          por favor, informe um ID válido'], 400);
+          return response()->json(['message'=>'Id menor que zero, por favor, informe um ID válido'], 400);
         }
         $cartao = Cartao::find($id);
         if($cartao){
@@ -135,6 +134,15 @@ class CartaoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($id < 0){
+          return response()->json(['message'=>'Id menor que zero, por favor, informe um ID válido'], 400);
+        }
+        $cartao = Cartao::find($id);
+        if($cartao){
+          $cartao->delete();
+          return response()->json([], 204);
+        }else{
+          return response()->json(['message'=>'O cartão com o id '.$id.' não existe'], 404);
+        }
     }
 }
