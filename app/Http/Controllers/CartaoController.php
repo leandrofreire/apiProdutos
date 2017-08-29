@@ -120,7 +120,7 @@ class CartaoController extends Controller
             $cartao->update($data);
             return response()->json(['data'=>$cartao], 200);
           }else{
-            return response()->json(['message'=>'O cartão com id'.$id.'não existe'], 400);
+            return response()->json(['message'=>'O cartão com id '.$id.' não existe'], 400);
           }
         }else{
           return response()->json(['message'=>'Dados inválidos'], 400);
