@@ -27,7 +27,8 @@ class CartaoController extends Controller
      */
     public function index()
     {
-        //
+        $cartoes = Cartao::all();
+        return response()->json(['cartoes'=>$cartoes],200);
     }
 
     /**
