@@ -76,7 +76,16 @@ class CartaoController extends Controller
      */
     public function show($id)
     {
-        //
+        if($id < 0){
+          return response()->json(['message'=>'Id menor que zero,
+          por favor, informe um ID válido'], 400);
+        }
+        $cartao = Cartao::find($id);
+        if($cartao){
+          return response()->json([$cartao], 200);
+        }else{
+          return response()->json(['message'=>'O veicuo com o '.$id.'não existe'], 404);
+        }
     }
 
     /**
