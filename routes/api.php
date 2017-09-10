@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::post('/cadastro','UserController@registrar');
+
 Route::group(['middleware'=>['auth:api']], function(){
   Route::resource('cartoes', 'CartaoController');
 });
