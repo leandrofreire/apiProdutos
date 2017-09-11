@@ -44,6 +44,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof MissingScopeException)
+          return response()->json(['error'=> ' Sem autorização.'], 401);
         return parent::render($request, $exception);
     }
 
@@ -57,7 +59,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+            return response()->json(['error' => 'Usuário não autenticado.'], 401);
         }
 
         return redirect()->guest(route('login'));
