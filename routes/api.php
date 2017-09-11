@@ -16,5 +16,11 @@ use Illuminate\Http\Request;
 Route::post('/cadastro','UserController@registrar');
 
 Route::group(['middleware'=>['auth:api']], function(){
-  Route::resource('cartoes', 'CartaoController');
+
+  Route::get('/cartoes', 'CartaoController@index')->middleware('scope:administrador,usuario');
+  Route::get('/cartoes/{id}', 'CartaoController@show')->middleware('scope:administrador,usuario');
+  Route::get('/cartoes?page{page}&qtd{qtd}', 'CartaoController@index')->middleware('scope:administrador,usuario');
+  Route::post('/cartoes', 'CartaoController@store')->middleware('scope:administrador,usuario');
+  Route::put('/cartoes/{id}', 'CartaoController@update')->middleware('scope:administrador,usuario');
+  Route::delete('/cartoes/{id}', 'CartaoController@destroy')->middleware('scope:administrador,usuario');
 });
